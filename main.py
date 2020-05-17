@@ -9,6 +9,7 @@ import os
 import torch.utils.data as data
 from torch.utils.data.dataloader import DataLoader
 import networks as nw
+import extendednetworks as en
 import torch.nn as nn
 
 class getDataset(data.Dataset):
@@ -90,10 +91,10 @@ if __name__ == '__main__':
 
     gd = getDataset('/home/demet/Desktop/CV_2020/fer2013/fer2013.csv', mode='Training')
     data_loader = DataLoader(gd, 2, False)
-    gd.visualize()
+    #gd.visualize()
 
     device = torch.device("cpu")
-    model = nw.extendedCNN(7)
+    model = en.extendedCNN(7)
     model.to(device)
     loss = nn.CrossEntropyLoss()
     loss.to(device)

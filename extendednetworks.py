@@ -48,6 +48,10 @@ class extendedCNN(nn.Module):
         data = self.act_4(data)
         data = self.pooling4(data)
 
+        data = self.conv_5(data)
+        data = self.act_5(data)
+        data = self.pooling5(data)
+
         data = data.view(data.size(0), -1)
         data = self.fc(data)
 
