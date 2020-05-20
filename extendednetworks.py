@@ -69,6 +69,7 @@ class blockExtended(nn.Module):
         self.block3 = basicBlock(filters * 2, filters * 3)
         self.block4 = basicBlock(filters * 3, filters * 4)
         self.block5 = basicBlock(filters * 4, filters * 5)
+        self.adaptive_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(filters * 5, num_labels)
 
     def forward(self, data):
@@ -77,6 +78,7 @@ class blockExtended(nn.Module):
         data = self.block3(data)
         data = self.block4(data)
         data = self.block5(data)
+        data = self.adaptive_pool(data)
         data = data.view(data.size(0), -1)
         data = self.fc(data)
 
@@ -98,6 +100,7 @@ class blockExtendedDouble(nn.Module):
         self.block8 = basicBlock(filters * 7, filters * 8)
         self.block9 = basicBlock(filters * 8, filters * 9)
         self.block10 = basicBlock(filters * 9, filters * 10)
+        self.adaptive_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(filters * 10, num_labels)
 
     def forward(self, data):
@@ -111,6 +114,7 @@ class blockExtendedDouble(nn.Module):
         data = self.block8(data)
         data = self.block9(data)
         data = self.block10(data)
+        data = self.adaptive_pool(data)
         data = data.view(data.size(0), -1)
         data = self.fc(data)
 

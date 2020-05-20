@@ -42,11 +42,13 @@ class blockCNN(nn.Module):
         self.num_labels = num_labels
         self.block1 = basicBlock(1, filters)
         self.block2 = basicBlock(filters, filters * 2)
+        self.adaptive_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(filters * 2, num_labels)
 
     def forward(self, data):
         data = self.block1(data)
         data = self.block2(data)
+        data = self.adaptive_pool(data)
         data = data.view(data.size(0), -1)
         data = self.fc(data)
 
