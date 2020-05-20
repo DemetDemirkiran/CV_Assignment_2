@@ -1,7 +1,8 @@
 import torch
 import numpy as np
 import torch.nn as nn
-from .block import basicBlock
+from block import basicBlock
+
 
 class extendedCNN(nn.Module):
 
@@ -32,7 +33,6 @@ class extendedCNN(nn.Module):
         self.fc = nn.Linear(1024, num_labels)
 
     def forward(self, data):
-
         data = self.conv_1(data)
         data = self.act_1(data)
         data = self.pooling1(data)
@@ -58,6 +58,7 @@ class extendedCNN(nn.Module):
 
         return data
 
+
 class blockExtended(nn.Module):
 
     def __init__(self, num_labels, filters=64):
@@ -81,8 +82,6 @@ class blockExtended(nn.Module):
 
         return data
 
-
-    ...
 
 class blockExtendedDouble(nn.Module):
 
@@ -116,3 +115,5 @@ class blockExtendedDouble(nn.Module):
         data = self.fc(data)
 
         return data
+
+    ...
