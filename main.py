@@ -11,6 +11,7 @@ from torch.utils.data.dataloader import DataLoader
 import networks as nw
 import extendednetworks as en
 import torch.nn as nn
+from sklearn.metrics import classification_report
 
 class getDataset(data.Dataset):
 
@@ -94,7 +95,7 @@ if __name__ == '__main__':
     #gd.visualize()
 
     device = torch.device("cpu")
-    model = en.extendedCNN(7)
+    model = nw.blockCNN(7, 64)
     model.to(device)
     loss = nn.CrossEntropyLoss()
     loss.to(device)
@@ -119,6 +120,8 @@ if __name__ == '__main__':
     data_loader = DataLoader(pt, 2, False)
     correct_count = 0
 
+    y_true = []
+    y_pred = []
     with torch.no_grad():
         for label, image in tqdm(data_loader):
             label = label.to(device)
@@ -126,11 +129,13 @@ if __name__ == '__main__':
             output = model(image)
             prediction = torch.sigmoid(output)
             prediction = torch.argmax(prediction, dim=1)
+            y_true.append(label.cpu().numpy())
+            y_pred.append(prediction.cpu().numpy())
+    # Flatten arrays
+    y_true = [g for f in y_true for g in f]
+    y_pred = [g for f in y_pred for g in f]
+    cl_report = classification_report(y_true, y_pred, labels=list(range(7)), output_dict=True)
 
-            for i in range(len(label)):
-                if label[i] == prediction[i]:
-                    correct_count += 1/len(pt)
-        print('Accuracy:{}'.format(correct_count))
 
 
 

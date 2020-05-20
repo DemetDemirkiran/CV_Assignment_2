@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import torch.nn as nn
+from .block import basicBlock
 
 class basicCNN(nn.Module):
 
@@ -15,7 +16,7 @@ class basicCNN(nn.Module):
         self.conv_2 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         self.act_2 = nn.ReLU()
         self.pooling2 = nn.AdaptiveAvgPool2d(1)
-        self.feature = nn.Sequential()
+        #self.feature = nn.Sequential()
         self.fc = nn.Linear(128, num_labels)
 
     def forward(self, data):
@@ -35,3 +36,19 @@ class basicCNN(nn.Module):
 
     ...
 
+class blockCNN(nn.Module):
+
+    def __init__(self, num_labels, filters=64):
+        super().__init__()
+        self.num_labels = num_labels
+        self.block1 = basicBlock(1, filters)
+        self.block2 = basicBlock(filters, filters*2)
+        self.fc = nn.Linear(128, num_labels)
+
+    def forward(self, data):
+        data = self.block1(data)
+        data = self.block2(data)
+        data = data.view(data.size(0), -1)
+        data = self.fc(data)
+
+        return data
