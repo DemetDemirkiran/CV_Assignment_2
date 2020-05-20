@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import torch.nn as nn
+from .block import basicBlock
 
 class extendedCNN(nn.Module):
 
@@ -57,5 +58,61 @@ class extendedCNN(nn.Module):
 
         return data
 
+class blockExtended(nn.Module):
+
+    def __init__(self, num_labels, filters=64):
+        super().__init__()
+        self.num_labels = num_labels
+        self.block1 = basicBlock(1, filters)
+        self.block2 = basicBlock(filters, filters * 2)
+        self.block3 = basicBlock(filters * 2, filters * 3)
+        self.block4 = basicBlock(filters * 3, filters * 4)
+        self.block5 = basicBlock(filters * 4, filters * 5)
+        self.fc = nn.Linear(filters * 5, num_labels)
+
+    def forward(self, data):
+        data = self.block1(data)
+        data = self.block2(data)
+        data = self.block3(data)
+        data = self.block4(data)
+        data = self.block5(data)
+        data = data.view(data.size(0), -1)
+        data = self.fc(data)
+
+        return data
+
+
     ...
 
+class blockExtendedDouble(nn.Module):
+
+    def __init__(self, num_labels, filters=64):
+        super().__init__()
+        self.num_labels = num_labels
+        self.block1 = basicBlock(1, filters)
+        self.block2 = basicBlock(filters, filters * 2)
+        self.block3 = basicBlock(filters * 2, filters * 3)
+        self.block4 = basicBlock(filters * 3, filters * 4)
+        self.block5 = basicBlock(filters * 4, filters * 5)
+        self.block6 = basicBlock(filters * 5, filters * 6)
+        self.block7 = basicBlock(filters * 6, filters * 7)
+        self.block8 = basicBlock(filters * 7, filters * 8)
+        self.block9 = basicBlock(filters * 8, filters * 9)
+        self.block10 = basicBlock(filters * 9, filters * 10)
+        self.fc = nn.Linear(filters * 10, num_labels)
+
+    def forward(self, data):
+        data = self.block1(data)
+        data = self.block2(data)
+        data = self.block3(data)
+        data = self.block4(data)
+        data = self.block5(data)
+        data = self.block6(data)
+        data = self.block7(data)
+        data = self.block8(data)
+        data = self.block9(data)
+        data = self.block10(data)
+        data = data.view(data.size(0), -1)
+        data = self.fc(data)
+
+        return data

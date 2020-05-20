@@ -43,7 +43,7 @@ class blockCNN(nn.Module):
         self.num_labels = num_labels
         self.block1 = basicBlock(1, filters)
         self.block2 = basicBlock(filters, filters*2)
-        self.fc = nn.Linear(128, num_labels)
+        self.fc = nn.Linear(filters*2, num_labels)
 
     def forward(self, data):
         data = self.block1(data)
