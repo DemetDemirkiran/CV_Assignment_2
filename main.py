@@ -90,7 +90,7 @@ class getDataset(data.Dataset):
 
 if __name__ == '__main__':
 
-    gd = getDataset('/home/demet/Desktop/CV_2020/fer2013/fer2013.csv', mode='Training')
+    gd = getDataset(os.path.expanduser('~/Desktop/CV_2020/fer2013/fer2013.csv'), mode='Training')
     data_loader = DataLoader(gd, 2, False)
     #gd.visualize()
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     #validation
     model.eval()
 
-    pt = getDataset('/home/demet/Desktop/CV_2020/fer2013/fer2013.csv', mode='Public')
+    pt = getDataset(os.path.expanduser('~/Desktop/CV_2020/fer2013/fer2013.csv'), mode='Public')
     data_loader = DataLoader(pt, 2, False)
     correct_count = 0
 
