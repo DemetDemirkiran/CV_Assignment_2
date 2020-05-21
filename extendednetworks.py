@@ -61,14 +61,14 @@ class extendedCNN(nn.Module):
 
 class blockExtended(nn.Module):
 
-    def __init__(self, num_labels, filters=64):
+    def __init__(self, num_labels, filters=64, kernel_size=(3,3)):
         super().__init__()
         self.num_labels = num_labels
-        self.block1 = basicBlock(1, filters)
-        self.block2 = basicBlock(filters, filters * 2)
-        self.block3 = basicBlock(filters * 2, filters * 3)
-        self.block4 = basicBlock(filters * 3, filters * 4)
-        self.block5 = basicBlock(filters * 4, filters * 5)
+        self.block1 = basicBlock(1, filters, kernel_size)
+        self.block2 = basicBlock(filters, filters * 2, kernel_size)
+        self.block3 = basicBlock(filters * 2, filters * 3, kernel_size)
+        self.block4 = basicBlock(filters * 3, filters * 4, kernel_size)
+        self.block5 = basicBlock(filters * 4, filters * 5, kernel_size)
         self.adaptive_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(filters * 5, num_labels)
 

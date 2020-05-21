@@ -37,11 +37,11 @@ class basicCNN(nn.Module):
 
 class blockCNN(nn.Module):
 
-    def __init__(self, num_labels, filters=64):
+    def __init__(self, num_labels, filters=64, kernel_size=(3, 3)):
         super().__init__()
         self.num_labels = num_labels
-        self.block1 = basicBlock(1, filters)
-        self.block2 = basicBlock(filters, filters * 2)
+        self.block1 = basicBlock(1, filters, kernel_size)
+        self.block2 = basicBlock(filters, filters * 2, kernel_size)
         self.adaptive_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(filters * 2, num_labels)
 
