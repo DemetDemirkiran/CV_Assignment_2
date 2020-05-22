@@ -14,6 +14,10 @@ import torch.nn as nn
 from sklearn.metrics import classification_report, precision_score
 from dataset import getDataset
 import pprint
+import yaml
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config_file', type=str, required=True, help='Path to yaml file.')
 
 
 def evaluate(model, ckpt_path, loader):
@@ -41,27 +45,26 @@ def evaluate(model, ckpt_path, loader):
 
 
 if __name__ == '__main__':
-    data_path = "D:\PycharmProjects\CV_Assignment_2-master\\fer2013.csv"
-    ckpt_path = 'D:\PycharmProjects\CV_Assignment_2\\blockExtended_64_99.pth'#'D:\PycharmProjects\CV_Assignment_2\\blockCNN_64_999.pth'
-    batch_size = 250
-    num_labels = 7
-    num_filters = 64
-    kernel_size = (3, 3)
+    args = parser.parse_args()
+    model_dict = {'blockCNN': nw.blockCNN,
+                  'extendedCNN': en.extendedCNN}
+    with open(args.config_file, 'r') as f:
+        config = yaml.load(f, yaml.SafeLoader)
 
-    public = getDataset(os.path.expanduser(data_path), mode='Public')
-    private = getDataset(os.path.expanduser(data_path), mode='Private')
-    public_loader = DataLoader(public, batch_size, False)
-    private_loader = DataLoader(private, batch_size, False)
+    public = getDataset(os.path.expanduser(config['data_path']), mode='Public')
+    private = getDataset(os.path.expanduser(config['data_path']), mode='Private')
+    public_loader = DataLoader(public, config['batch_size'], False)
+    private_loader = DataLoader(private, config['batch_size'], False)
 
-    device = torch.device("cuda")
-    model = en.blockExtended(num_labels, num_filters, kernel_size)
+    device = torch.device(config['device'])
+    model = model_dict[config['model']](config['num_labels'], config['num_filters'], config['kernel_size'])
     model.to(device)
     
     #validation
     model.eval()
 
-    public_res = evaluate(model, ckpt_path, public_loader)
-    private_res = evaluate(model, ckpt_path, private_loader)
+    public_res = evaluate(model, config['ckpt_path'], public_loader)
+    private_res = evaluate(model, config['ckpt_path'], private_loader)
 
     pp = pprint.PrettyPrinter()
     print('Public results')

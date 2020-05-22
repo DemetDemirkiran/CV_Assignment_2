@@ -1,0 +1,11 @@
+data_path: "D:\\PycharmProjects\\CV_Assignment_2-master\\fer2013.csv"
+ckpt_path: "D:\\PycharmProjects\\CV_Assignment_2\\blockCNN_16_50.pth"
+batch_size: 250
+num_labels: 7
+num_filters: 16
+epochs: 100
+ckpt_step: 50
+kernel_size: [3, 3]
+learning_rate: 1e-02
+device: "cuda"
+model: "blockCNN"

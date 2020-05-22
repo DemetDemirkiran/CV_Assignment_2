@@ -13,28 +13,31 @@ import extendednetworks as en
 import torch.nn as nn
 from sklearn.metrics import classification_report
 from dataset import getDataset
+import yaml
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config_file', type=str, required=True, help='Path to yaml file.')
 
 
 if __name__ == '__main__':
-    data_path = "D:\PycharmProjects\CV_Assignment_2-master\\fer2013.csv"
-    batch_size = 125
-    num_labels = 7
-    num_filters = 64
-    epochs = 100
-    ckpt_step = 50
-    kernel_size = (3, 3)
+    args = parser.parse_args()
+    model_dict = {'blockCNN': nw.blockCNN,
+                  'extendedCNN': en.extendedCNN}
+    with open(args.config_file, 'r') as f:
+        config = yaml.load(f, yaml.SafeLoader)
 
-    gd = getDataset(os.path.expanduser(data_path), mode='Training')
-    data_loader = DataLoader(gd, batch_size, False)
+    gd = getDataset(os.path.expanduser(config['data_path']), mode='Training')
+    data_loader = DataLoader(gd, config['batch_size'], False)
 
-    device = torch.device("cuda")
-    model = en.blockExtended(num_labels, num_filters, kernel_size)
+    device = torch.device(config['device'])
+
+    model = model_dict[config['model']](config['num_labels'], config['num_filters'], config['kernel_size'])
     model.to(device)
     loss = nn.CrossEntropyLoss()
     loss.to(device)
-    opt = torch.optim.Adam(model.parameters(), lr=1e-2)
+    opt = torch.optim.Adam(model.parameters(), lr=float(config['learning_rate']))
     model.train()
-    for ep in tqdm(range(epochs)):
+    for ep in tqdm(range(config['epochs'])):
         for label, image in data_loader:
             opt.zero_grad()
             label = label.to(device).long()
@@ -44,7 +47,7 @@ if __name__ == '__main__':
             error.backward()
             opt.step()
         print(error.data)
-        if ep % ckpt_step == 0 and ep > 0:
-            torch.save(model.state_dict(), "{}_{}_{}.pth".format(type(model).__name__, num_filters, ep))
-    torch.save(model.state_dict(), "{}_{}_{}.pth".format(type(model).__name__, num_filters, ep))
+        if ep % config['ckpt_step'] == 0 and ep > 0:
+            torch.save(model.state_dict(), "{}_{}_{}.pth".format(type(model).__name__, config['num_filters'], ep))
+    torch.save(model.state_dict(), "{}_{}_{}.pth".format(type(model).__name__, config['num_filters'], ep))
 
